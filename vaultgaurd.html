@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login → VaultGuard</title>
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#0f172a; --panel:#111827; --muted:#1f2937; --text:#e5e7eb; --sub:#9ca3af;
+      --brand:#2563eb; --brand-2:#1d4ed8; --good:#10b981; --bad:#ef4444; --ring:#3b82f6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:#0b101f;color:var(--text)}
+    a{color:inherit}
+
+    /* ---------- Shared UI ---------- */
+    .wrap{max-width:1000px;margin:0 auto;padding:28px}
+    .panel{background:rgba(17,24,39,.74);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);backdrop-filter: blur(6px)}
+    .title{font-size:22px;font-weight:800;margin:8px 0 14px}
+    input{width:100%;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:var(--muted);color:var(--text);outline:0;font-size:15px;transition:border .2s,box-shadow .2s,transform .05s}
+    input:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--brand);border:0;border-radius:12px;color:white;padding:14px 18px;font-weight:700;cursor:pointer;width:100%;transition:transform .05s, background .2s, box-shadow .2s;box-shadow:0 10px 20px rgba(37,99,235,.25)}
+    .btn:hover{background:var(--brand-2)} .btn:active{transform:translateY(1px)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px} .row .col-1{grid-column:1/-1}
+    .icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, transform .05s, border-color .2s}
+    .icon-btn:active{transform:translateY(1px)}
+    .fade-in{animation:fade .24s ease} @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+    /* ---------- Login Screen (glass card) ---------- */
+    .login-wrap{
+      min-height:100dvh;display:grid;place-items:center;
+      background:radial-gradient(1200px 600px at 20% 10%, #cf6f9f33, transparent 70%),
+                 radial-gradient(1200px 700px at 80% 80%, #6fb3ff33, transparent 70%),
+                 linear-gradient(180deg,#0b101f 0%, #101536 100%);
+      padding:28px;
+    }
+    .login-card{
+      position:relative; width:min(520px, 100%); border-radius:22px; padding:36px 28px 24px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); box-shadow:0 30px 60px rgba(0,0,0,.35); backdrop-filter: blur(10px);
+    }
+    .login-avatar{position:absolute; left:50%; transform:translateX(-50%); top:-42px; width:84px; height:84px; border-radius:50%; background:#0b2245; color:#cfe3ff; display:grid; place-items:center; border:3px solid rgba(255,255,255,.55)}
+    .login-input{display:flex; align-items:center; gap:10px; margin:14px 0}
+    .login-input i{width:44px; height:46px; display:grid; place-items:center; background:#0b2245; color:#cfe3ff; border-radius:10px}
+    .login-input input{height:46px}
+    .login-actions{display:flex; align-items:center; justify-content:space-between; color:var(--sub); font-size:13px; margin:10px 2px 18px}
+    .shadow-bar{position:absolute; left:50%; transform:translateX(-50%); bottom:-22px; width:60%; height:46px; background:rgba(255,255,255,.12); border-radius:16px; filter:blur(6px)}
+    .login-btn{letter-spacing:.12em}
+
+    /* ---------- VaultGuard Header (center title + right controls) ---------- */
+    header{
+      position:relative;
+      display:flex; justify-content:center; align-items:center;
+      margin-bottom:20px; min-height:48px;
+    }
+    .center-header{display:inline-flex; align-items:center; gap:12px}
+    header h1{font-size:34px;letter-spacing:.5px;margin:0;font-weight:800}
+    header .lock{font-size:22px;color:#fbbf24}
+    .pill{display:inline-flex;gap:8px;align-items:center;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.35);padding:6px 10px;border-radius:999px;font-size:12px}
+    .right-controls{
+      position:absolute; right:0; top:50%; transform:translateY(-50%);
+      display:flex; gap:8px; align-items:center;
+    }
+    .logout-btn{
+      display:flex; align-items:center; gap:8px;
+      background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.35);
+      color:#fecaca; padding:8px 14px; border-radius:10px; cursor:pointer;
+      transition:background .2s, transform .05s;
+    }
+    .logout-btn:hover{background:rgba(239,68,68,.25)}
+    .logout-btn:active{transform:translateY(1px)}
+
+    .lock-toggle{
+      display:flex; align-items:center; gap:8px; cursor:pointer;
+      padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.06); color:#dbeafe;
+      transition:background .2s, border-color .2s, transform .05s;
+    }
+    .lock-toggle.unlocked{background:rgba(16,185,129,.18); border-color:rgba(16,185,129,.45); color:#d1fae5}
+    .lock-toggle:active{transform:translateY(1px)}
+
+    /* ---------- VaultGuard content ---------- */
+    .list{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr)); /* two per row */
+      gap:14px;
+      margin-top:18px
+    }
+    @media (max-width:720px){
+      .row{grid-template-columns:1fr}
+      .list{grid-template-columns: 1fr} /* stack on small screens */
+    }
+    .card{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:linear-gradient(180deg,#0a1226 0%,#0b1021 70%);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px 14px;transition:transform .15s, box-shadow .2s, border-color .2s}
+    .card:hover{transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.25); border-color:rgba(59,130,246,.20)}
+    .name{font-weight:800;font-size:18px;margin-bottom:6px}
+    .field{color:var(--sub);font-size:14px;line-height:1.35}
+    .bullets{letter-spacing:2px}
+    .empty{border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:22px;text-align:center;color:var(--sub)}
+    .save-row{display:flex;gap:12px;margin-top:12px}
+    .icon-btn[data-action="view"]:hover{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.35)}
+    .icon-btn[data-action="edit"]:hover{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35)}
+    .icon-btn[data-action="delete"]:hover{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.38)}
+
+    /* Disabled actions when locked */
+    .controls-locked .actions .icon-btn{
+      opacity:.35; pointer-events:none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========== LOGIN SCREEN ========== -->
+  <section id="loginScreen" class="login-wrap">
+    <div class="login-card fade-in">
+      <div class="login-avatar"><i class="fa-solid fa-user fa-xl"></i></div>
+      <h2 style="margin:12px 0 16px; text-align:center; font-weight:800">Welcome</h2>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="login-input">
+          <i class="fa-solid fa-user"></i>
+          <input id="loginUser" placeholder="Email ID / Username" required />
+        </div>
+        <div class="login-input">
+          <i class="fa-solid fa-lock"></i>
+          <input id="loginPass" placeholder="Password" type="password" required />
+        </div>
+
+        <div class="login-actions">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input id="rememberMe" type="checkbox" style="accent-color:#3b82f6"> Remember me
+          </label>
+          <a href="#" onclick="alert('Demo only ✨');return false;" style="text-decoration:none;opacity:.8">Forgot Password?</a>
+        </div>
+
+        <button class="btn login-btn" type="submit">
+          <i class="fa-solid fa-right-to-bracket"></i> LOGIN
+        </button>
+      </form>
+
+      <div class="shadow-bar" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- ========== VAULTGUARD APP ========== -->
+  <section id="appScreen" style="display:none">
+    <div class="wrap">
+      <header>
+        <!-- centered title group -->
+        <div class="center-header">
+          <h1>VaultGuard</h1>
+          <span class="lock"><i class="fa-solid fa-lock"></i></span>
+          <span class="pill"><i class="fa-solid fa-database"></i> Local Storage</span>
+        </div>
+
+        <!-- right: lock control + logout -->
+        <div class="right-controls">
+          <button id="lockToggle" class="lock-toggle" title="Edit Controls">
+            <i class="fa-solid fa-lock"></i> <span id="lockLabel">Locked</span>
+          </button>
+          <button id="logoutBtn" class="logout-btn" title="Logout">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- Add / Update form -->
+      <section class="panel fade-in" aria-label="Add New Credential">
+        <div class="title">Add New Credential</div>
+        <form id="credForm">
+          <div class="row">
+            <div class="col-1"><input id="site" placeholder="Site / Label (e.g., Gmail, GitHub)" required /></div>
+            <div><input id="email" placeholder="Email / Username" required /></div>
+            <div><input id="password" placeholder="Password" required /></div>
+          </div>
+          <div class="save-row">
+            <button class="btn" id="saveBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> <span id="saveText">Save</span></button>
+            <button type="button" class="icon-btn" id="cancelEdit" title="Cancel edit" style="display:none"><i class="fa-solid fa-rotate-left"></i></button>
+          </div>
+          <input type="hidden" id="editId" />
+        </form>
+      </section>
+
+      <!-- Saved credentials -->
+      <section class="panel" style="margin-top:18px" aria-label="Saved Credentials">
+        <div class="title">Saved Credentials</div>
+        <div id="list" class="list" role="list"></div>
+        <div id="emptyState" class="empty" style="display:none">No credentials yet — add one above.</div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ========== JS ========== -->
+  <script>
+    /* -------------------- AUTH -------------------- */
+    const AUTH_KEY  = 'vaultguard_auth_v1';  // {username,password}
+    const TOKEN_KEY = 'vaultguard_token_v1'; // "logged in" flag
+
+    function ensureDefaultAuth(){
+      if (!localStorage.getItem(AUTH_KEY)){
+        localStorage.setItem(AUTH_KEY, JSON.stringify({username:'admin', password:'admin'}));
+      }
+    }
+    function getAuth(){ ensureDefaultAuth(); return JSON.parse(localStorage.getItem(AUTH_KEY)); }
+
+    const loginScreen = document.getElementById('loginScreen');
+    const appScreen   = document.getElementById('appScreen');
+
+    function showApp(){ loginScreen.style.display='none'; appScreen.style.display='block'; }
+    function showLogin(){ appScreen.style.display='none'; loginScreen.style.display='grid'; }
+
+    // On load
+    if (localStorage.getItem(TOKEN_KEY)) { showApp(); } else { showLogin(); }
+
+    // Login submit
+    document.getElementById('loginForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value.trim();
+      const p = document.getElementById('loginPass').value;
+      const remember = document.getElementById('rememberMe').checked;
+      const {username, password} = getAuth();
+
+      if (u === username && p === password){
+        if (remember) localStorage.setItem(TOKEN_KEY, '1');
+        showApp();
+        updateLockUI();  // reflect lock state
+        render();        // render list
+        e.target.reset();
+      } else {
+        alert('Invalid credentials. (Default is admin / admin)');
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{
+      localStorage.removeItem(TOKEN_KEY);
+      showLogin();
+    });
+
+    /* -------------------- LOCK CONTROL -------------------- */
+    const UNLOCK_KEY = 'vaultguard_unlocked_v1'; // '1' when unlocked
+    if (localStorage.getItem(UNLOCK_KEY) === null) localStorage.setItem(UNLOCK_KEY,'0'); // default locked
+
+    const lockToggleBtn = document.getElementById('lockToggle');
+    const lockLabel = document.getElementById('lockLabel');
+
+    function isUnlocked(){ return localStorage.getItem(UNLOCK_KEY)==='1'; }
+    function setUnlocked(v){ localStorage.setItem(UNLOCK_KEY, v?'1':'0'); updateLockUI(); }
+    function updateLockUI(){
+      const unlocked = isUnlocked();
+      document.body.classList.toggle('controls-locked', !unlocked);
+      lockToggleBtn.classList.toggle('unlocked', unlocked);
+      lockToggleBtn.innerHTML = unlocked
+        ? '<i class="fa-solid fa-lock-open"></i> <span id="lockLabel">Unlocked</span>'
+        : '<i class="fa-solid fa-lock"></i> <span id="lockLabel">Locked</span>';
+      // refresh reference to label (since we replaced innerHTML)
+      window.setTimeout(()=>{ window.lockLabel = document.getElementById('lockLabel'); },0);
+    }
+    lockToggleBtn.addEventListener('click', ()=> setUnlocked(!isUnlocked()));
+    // initialize UI (for direct loads)
+    updateLockUI();
+
+    /* -------------------- VAULTGUARD -------------------- */
+    const KEY = 'vaultguard_credentials_v1';
+    const readAll = () => JSON.parse(localStorage.getItem(KEY) || '[]');
+    const writeAll = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+
+    // DOM refs
+    const form = document.getElementById('credForm');
+    const siteEl = document.getElementById('site');
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const listEl = document.getElementById('list');
+    const emptyEl = document.getElementById('emptyState');
+    const editIdEl = document.getElementById('editId');
+    const saveText = document.getElementById('saveText');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+
+    function render() {
+      const items = readAll();
+      listEl.innerHTML = '';
+      if (!items.length) { emptyEl.style.display = 'block'; return; }
+      emptyEl.style.display = 'none';
+
+      for (const item of items) {
+        const card = document.createElement('div');
+        card.className = 'card fade-in';
+        card.dataset.id = item.id;
+
+        const left = document.createElement('div');
+        left.innerHTML = `
+          <div class="name">${escapeHtml(item.site)}</div>
+          <div class="field"><strong>Email:</strong> <span class="value" data-type="email" data-visible="false">${mask(item.email)}</span></div>
+          <div class="field"><strong>Password:</strong> <span class="value" data-type="password" data-visible="false">${bullets(item.password.length)}</span></div>
+        `;
+
+        const right = document.createElement('div');
+        right.className = 'actions';
+        right.innerHTML = `
+          <button class="icon-btn" data-action="view" title="Show/Hide credentials"><i class="fa-solid fa-eye"></i></button>
+          <button class="icon-btn" data-action="edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button class="icon-btn" data-action="delete" title="Delete"><i class="fa-solid fa-xmark"></i></button>
+        `;
+
+        card.appendChild(left); card.appendChild(right); listEl.appendChild(card);
+      }
+      // apply locked style on first render too
+      updateLockUI();
+    }
+
+    function mask(str){
+      if (!str) return '';
+      const [user, domain=''] = String(str).split('@');
+      const safeUser = user.length <= 2 ? user[0] + '*' : user.slice(0,2) + '***';
+      return domain ? `${safeUser}@${domain.replace(/./g,'*')}` : `${safeUser}***`;
+    }
+    function bullets(len){ return '<span class="bullets">' + '•'.repeat(Math.max(8,len)) + '</span>'; }
+    function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const site = siteEl.value.trim();
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+      if(!site || !email || !password) return;
+
+      const all = readAll();
+      const editId = editIdEl.value;
+
+      if (editId){
+        const idx = all.findIndex(x => x.id === editId);
+        if (idx !== -1){
+          all[idx] = {...all[idx], site, email, password, updatedAt: Date.now()};
+          writeAll(all);
+          exitEditMode(); render(); return;
+        }
+      }
+
+      const id = cryptoRandomId();
+      all.unshift({ id, site, email, password, createdAt: Date.now() });
+      writeAll(all);
+      form.reset();
+      render();
+    });
+
+    function enterEditMode(item){
+      if (!isUnlocked()) { alert('Unlock controls to edit.'); return; }
+      siteEl.value = item.site; emailEl.value = item.email; passEl.value  = item.password;
+      editIdEl.value = item.id; saveText.textContent = 'Update'; cancelEditBtn.style.display = 'inline-flex'; siteEl.focus();
+    }
+    function exitEditMode(){ editIdEl.value=''; saveText.textContent='Save'; cancelEditBtn.style.display='none'; form.reset(); }
+    cancelEditBtn.addEventListener('click', exitEditMode);
+
+    listEl.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.icon-btn'); if (!btn) return;
+      const card = btn.closest('.card'); const id = card.dataset.id; const action = btn.dataset.action;
+
+      if (action === 'delete'){
+        if (!isUnlocked()) { alert('Unlock controls to delete.'); return; }
+        if (!confirm('Delete this credential?')) return;
+        writeAll(readAll().filter(x => x.id !== id));
+        if (editIdEl.value === id) exitEditMode();
+        render();
+      }
+      if (action === 'edit'){
+        const item = readAll().find(x => x.id === id); if (item) enterEditMode(item);
+      }
+      if (action === 'view'){
+        if (!isUnlocked()) { alert('Unlock controls to view credentials.'); return; }
+        toggleView(card, id, btn);
+      }
+    });
+
+    function toggleView(card, id, btn){
+      const item = readAll().find(x=>x.id===id); if (!item) return;
+      const spans = card.querySelectorAll('.value');
+      const isVisible = spans[0]?.dataset.visible === 'true';
+
+      if (isVisible){
+        spans.forEach(s=>{
+          s.dataset.visible='false';
+          if (s.dataset.type==='email') s.innerHTML = mask(item.email);
+          if (s.dataset.type==='password') s.innerHTML = bullets(item.password.length);
+        });
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i>'; btn.title='Show credentials';
+      } else {
+        spans.forEach(s=>{
+          s.dataset.visible='true';
+          if (s.dataset.type==='email') s.textContent = item.email;
+          if (s.dataset.type==='password') s.textContent = item.password;
+        });
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>'; btn.title='Hide credentials';
+      }
+    }
+    function cryptoRandomId(){ return (window.crypto?.randomUUID ? crypto.randomUUID() : 'id-'+Math.random().toString(36).slice(2)+Date.now().toString(36)); }
+
+    // Render right away if already logged in
+    if (localStorage.getItem(TOKEN_KEY)) render();
+  </script>
+</body>
+</html>
