@@ -1,0 +1,82 @@
+:root{
+  --bg:#0f172a; --panel:#111827; --muted:#1f2937; --text:#e5e7eb; --sub:#9ca3af;
+  --brand:#2563eb; --brand-2:#1d4ed8; --good:#10b981; --bad:#ef4444; --ring:#3b82f6;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:#0b101f;color:var(--text)}
+a{color:inherit}
+.muted-link{text-decoration:none;opacity:.8}
+.accent-blue{accent-color:#3b82f6}
+
+/* Shared UI */
+.wrap{max-width:1000px;margin:0 auto;padding:28px}
+.panel{background:rgba(17,24,39,.74);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);backdrop-filter: blur(6px);margin-top:18px}
+.title{font-size:22px;font-weight:800;margin:8px 0 14px}
+input{width:100%;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:var(--muted);color:var(--text);outline:0;font-size:15px;transition:border .2s,box-shadow .2s,transform .05s}
+input:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--brand);border:0;border-radius:12px;color:white;padding:14px 18px;font-weight:700;cursor:pointer;width:100%;transition:transform .05s, background .2s, box-shadow .2s;box-shadow:0 10px 20px rgba(37,99,235,.25)}
+.btn:hover{background:var(--brand-2)} .btn:active{transform:translateY(1px)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row .col-1{grid-column:1/-1}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, transform .05s, border-color .2s}
+.icon-btn:active{transform:translateY(1px)}
+.fade-in{animation:fade .24s ease} @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* Login */
+.login-wrap{
+  min-height:100dvh;display:grid;place-items:center;
+  background:radial-gradient(1200px 600px at 20% 10%, #cf6f9f33, transparent 70%),
+             radial-gradient(1200px 700px at 80% 80%, #6fb3ff33, transparent 70%),
+             linear-gradient(180deg,#0b101f 0%, #101536 100%);
+  padding:28px;
+}
+.login-card{
+  position:relative; width:min(520px, 100%); border-radius:22px; padding:36px 28px 24px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); box-shadow:0 30px 60px rgba(0,0,0,.35); backdrop-filter: blur(10px);
+}
+.login-avatar{position:absolute; left:50%; transform:translateX(-50%); top:-42px; width:84px; height:84px; border-radius:50%; background:#0b2245; color:#cfe3ff; display:grid; place-items:center; border:3px solid rgba(255,255,255,.55)}
+.login-title{margin:12px 0 16px; text-align:center; font-weight:800}
+.login-input{display:flex; align-items:center; gap:10px; margin:14px 0}
+.login-input i{width:44px; height:46px; display:grid; place-items:center; background:#0b2245; color:#cfe3ff; border-radius:10px}
+.login-input input{height:46px}
+.login-actions{display:flex; align-items:center; justify-content:space-between; color:var(--sub); font-size:13px; margin:10px 2px 18px}
+.remember-me{display:flex;align-items:center;gap:8px;cursor:pointer}
+.shadow-bar{position:absolute; left:50%; transform:translateX(-50%); bottom:-22px; width:60%; height:46px; background:rgba(255,255,255,.12); border-radius:16px; filter:blur(6px)}
+.login-btn{letter-spacing:.12em}
+
+/* Header */
+header{
+  position:relative;
+  display:flex; justify-content:center; align-items:center;
+  margin-bottom:20px; min-height:48px;
+}
+.center-header{display:inline-flex; align-items:center; gap:12px}
+header h1{font-size:34px;letter-spacing:.5px;margin:0;font-weight:800}
+header .lock{font-size:22px;color:#fbbf24}
+.pill{display:inline-flex;gap:8px;align-items:center;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.35);padding:6px 10px;border-radius:999px;font-size:12px}
+.right-controls{position:absolute; right:0; top:50%; transform:translateY(-50%); display:flex; gap:8px; align-items:center;}
+.logout-btn{display:flex; align-items:center; gap:8px; background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.35); color:#fecaca; padding:8px 14px; border-radius:10px; cursor:pointer; transition:background .2s, transform .05s;}
+.logout-btn:hover{background:rgba(239,68,68,.25)} .logout-btn:active{transform:translateY(1px)}
+.lock-toggle{display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.06); color:#dbeafe; transition:background .2s, border-color .2s, transform .05s;}
+.lock-toggle.unlocked{background:rgba(16,185,129,.18); border-color:rgba(16,185,129,.45); color:#d1fae5}
+.lock-toggle:active{transform:translateY(1px)}
+
+/* List two per row */
+.list{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; margin-top:18px}
+@media (max-width:720px){ .row{grid-template-columns:1fr} .list{grid-template-columns:1fr} }
+
+/* Cards */
+.card{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;background:linear-gradient(180deg,#0a1226 0%,#0b1021 70%);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px 14px;transition:transform .15s, box-shadow .2s, border-color .2s}
+.card:hover{transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.25); border-color:rgba(59,130,246,.20)}
+.name{font-weight:800;font-size:18px;margin-bottom:6px}
+.field{color:var(--sub);font-size:14px;line-height:1.35}
+.bullets{letter-spacing:2px}
+.empty{border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:22px;text-align:center;color:var(--sub)}
+.save-row{display:flex;gap:12px;margin-top:12px}
+.icon-btn[data-action="view"]:hover{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.35)}
+.icon-btn[data-action="edit"]:hover{background:rgba(59,130,246,.12);border-color:rgba(59,130,246,.35)}
+.icon-btn[data-action="delete"]:hover{background:rgba(239,68,68,.14);border-color:rgba(239,68,68,.38)}
+
+/* Locked */
+.controls-locked .actions .icon-btn{opacity:.35; pointer-events:none}

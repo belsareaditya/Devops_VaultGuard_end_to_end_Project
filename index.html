@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login → VaultGuard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer"/>
+  <link rel="stylesheet" href="vaultguard.css" />
+</head>
+<body>
+  <!-- LOGIN -->
+  <section id="loginScreen" class="login-wrap">
+    <div class="login-card fade-in">
+      <div class="login-avatar"><i class="fa-solid fa-user fa-xl"></i></div>
+      <h2 class="login-title">Welcome</h2>
+      <form id="loginForm" autocomplete="off">
+        <div class="login-input"><i class="fa-solid fa-user"></i><input id="loginUser" placeholder="Email ID / Username" required /></div>
+        <div class="login-input"><i class="fa-solid fa-lock"></i><input id="loginPass" placeholder="Password" type="password" required /></div>
+        <div class="login-actions">
+          <label class="remember-me"><input id="rememberMe" type="checkbox" class="accent-blue"> Remember me</label>
+          <a href="#" onclick="alert('Demo only ✨');return false;" class="muted-link">Forgot Password?</a>
+        </div>
+        <button class="btn login-btn" type="submit"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</button>
+      </form>
+      <div class="shadow-bar" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="appScreen" style="display:none">
+    <div class="wrap">
+      <header>
+        <div class="center-header">
+          <h1>VaultGuard</h1>
+          <span class="lock"><i class="fa-solid fa-lock"></i></span>
+          <span class="pill"><i class="fa-solid fa-database"></i> Local Storage</span>
+        </div>
+        <div class="right-controls">
+          <button id="lockToggle" class="lock-toggle" title="Edit Controls">
+            <i class="fa-solid fa-lock"></i> <span id="lockLabel">Locked</span>
+          </button>
+          <button id="logoutBtn" class="logout-btn" title="Logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+        </div>
+      </header>
+
+      <section class="panel fade-in" aria-label="Add New Credential">
+        <div class="title">Add New Credential</div>
+        <form id="credForm">
+          <div class="row">
+            <div class="col-1"><input id="site" placeholder="Site / Label (e.g., Gmail, GitHub)" required /></div>
+            <div><input id="email" placeholder="Email / Username" required /></div>
+            <div><input id="password" placeholder="Password" required /></div>
+          </div>
+          <div class="save-row">
+            <button class="btn" id="saveBtn" type="submit"><i class="fa-solid fa-floppy-disk"></i> <span id="saveText">Save</span></button>
+            <button type="button" class="icon-btn" id="cancelEdit" title="Cancel edit" style="display:none"><i class="fa-solid fa-rotate-left"></i></button>
+          </div>
+          <input type="hidden" id="editId" />
+        </form>
+      </section>
+
+      <section class="panel" aria-label="Saved Credentials">
+        <div class="title">Saved Credentials</div>
+        <div id="list" class="list" role="list"></div>
+        <div id="emptyState" class="empty" style="display:none">No credentials yet — add one above.</div>
+      </section>
+    </div>
+  </section>
+
+  <script src="vaultguard_script.js"></script>
+</body>
+</html>
