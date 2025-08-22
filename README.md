@@ -42,7 +42,7 @@ Deploying the Vault guard WebApp.
 <img width="946" height="632" alt="image" src="https://github.com/user-attachments/assets/595fc368-7ab1-4c2d-8edf-9b0b5368c745" />
 
 
-### 2. Here we have to Enter the Username=admin , password=admin
+### 2. Here we have to add the credentials of Application.
 <img width="1355" height="705" alt="image" src="https://github.com/user-attachments/assets/58132739-5312-4cc9-a88c-d6dfbb3bd02d" />
 
 
